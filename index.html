@@ -127,6 +127,7 @@
             document.getElementById("StartRecording").style.display = "none";
             document.getElementById("StopRecording").style.display = "inline-block";
             document.getElementById("table").style.display = "table";
+            setTimeout(Startrecording(),2000);
         }
         
        
@@ -147,7 +148,7 @@
                 document.getElementById("table").style.display = "none";
                 document.getElementById("dataFeild").style.display = "none";
             }
-            setTimeout(StopRecording(),1000);
+            
             // exportToCsv("data.csv", data)
         }
 
