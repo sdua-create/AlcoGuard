@@ -107,9 +107,9 @@
             window.addEventListener("devicemotion", accelerometerUpdate, true);
         }
         function accelerometerUpdate(e) {
-            let x = (event.accelerationIncludingGravity.x * 1).toFixed(2);
-            let y = (event.accelerationIncludingGravity.y * 1).toFixed(2);
-            let z = (event.accelerationIncludingGravity.z* 1).toFixed(2);
+            let x = (event.acceleration.x * 1).toFixed(4);
+            let y = (event.acceleration.y * 1).toFixed(4);
+            let z = (event.acceleration.z* 1).toFixed(4);
             document.getElementById("valX").innerText = "Acceleration along the X-axis " + x;
             document.getElementById("valY").innerText = "Acceleration along the Y-axis " + y;
             document.getElementById("valZ").innerText = "Acceleration along the Z-axis " + z;
