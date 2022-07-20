@@ -30,6 +30,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container center">
         <div class="row">
@@ -42,8 +43,9 @@
                 <h6 id="valZ"></h6>
             </div>
             <div class="row">
-                <a id="StartRecording" class="waves-effect waves-light btn green" onclick=StartRecording()>
-                    <i class="material-icons right">save</i>StartRecording</a>
+                <a id="StartRecording" class="waves-effect waves-light btn green" onclick=StartRecording()><i
+                        class="material-icons right">save</i>Start
+                    Recording</a>
                 <a id="StopRecording" class="waves-effect waves-light btn red" onclick=StopRecording()
                     style="display: none;"><i class="material-icons right">fiber_manual_record</i>Stop Recording</a>
             </div>
@@ -65,10 +67,10 @@
             <div class="row">
                 <table id="table" style="display: none;" class="highlight">
                     <thead>
-                        <th>X</th>
-                        <th>Y</th>
-                        <th>Z</th>
-                    </thead>
+                       <th>X</th>
+                       <th>Y</th>
+                       <th>Z</th>
+                     </thead>
                     <tbody id="tbody"></tbody>
                 </table>
             </div>
@@ -79,25 +81,32 @@
         <p id="err"></p>
     </div>
     <script type="text/javascript">
+        console.log("Current Date:");
+        console.log(Date.now());
         let recording = false;
 
-        let data = [
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99],
-            // [251, 365,546], [4, 45,78], [64, 5,99]
+        let data = [ 
+            ["x","y","z"],
+             // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32],
+            // [251, 365,7], [4, 45,87], [64, 5,32]
+            
         ];
+        let current_time = Date.now();
+        const threshold = 200;
+        let reading_count = 0;
 
         if (window.DeviceMotionEvent == undefined) {
             document.getElementById("activated").style.display = "none";
@@ -107,17 +116,31 @@
             window.addEventListener("devicemotion", accelerometerUpdate, true);
         }
         function accelerometerUpdate(e) {
-            let x = (event.acceleration.x *1).toFixed(3);
-            let y = (event.acceleration.y * 1).toFixed(3);
-            let z = (event.acceleration.z* 1).toFixed(3);
+            let x = (event.acceleration.x * 1).toFixed(2);
+            let y = (event.acceleration.y * 1).toFixed(2);
+            let z = (event.acceleration.z* 1).toFixed(2);
+         
             document.getElementById("valX").innerText = "Acceleration along the X-axis " + x;
             document.getElementById("valY").innerText = "Acceleration along the Y-axis " + y;
             document.getElementById("valZ").innerText = "Acceleration along the Z-axis " + z;
-
+           
             if (recording) {
-                let str = "<tr><td>" + x + "</td><td>" + y +"</td><td>" +z+"</td></tr>";
-                document.getElementById("tbody").innerHTML += str;
-                data.push([x, y,z])
+                if (reading_count < threshold) {
+                    // save
+                    let temp_time = Date.now();
+                    if (temp_time - current_time > 50) {
+                        let str ="<tr><td>" + x + "</td><td>" + y + "</td><td>" + z +"</td></tr>";
+                        document.getElementById("tbody").innerHTML += str;
+                        data.push([x,y,z]);
+                        current_time = Date.now();
+                        reading_count++;
+                    }
+                }
+                else {
+                    // stop
+                    alert("Enough data has been collected!");
+                    StopRecording();
+                }
             }
         }
 
@@ -127,9 +150,8 @@
             document.getElementById("StartRecording").style.display = "none";
             document.getElementById("StopRecording").style.display = "inline-block";
             document.getElementById("table").style.display = "table";
-          }
-        
-       
+        }
+
         function StopRecording() {
             recording = false;
             document.getElementById("StartRecording").style.display = "inline-block";
@@ -137,9 +159,9 @@
             if (data.length > 0) {
                 let str = "["
                 for (let i = 0; i < data.length; i++) {
-                    str += "[" + data[i][0] + ", " + data[i][1] + "], "
+                   str += "[" + data[i][0] + ", " + data[i][1] + "], "
                 }
-                str = str.substring(0, str.length);
+                str = str.substring(0, str.length-2);
                 str += "]"
                 document.getElementById("dataFeild").style.display = "block";
                 document.getElementById("textarea").value = str;
@@ -147,7 +169,6 @@
                 document.getElementById("table").style.display = "none";
                 document.getElementById("dataFeild").style.display = "none";
             }
-            
             // exportToCsv("data.csv", data)
         }
 
@@ -168,6 +189,8 @@
         function downloadFile() {
             exportToCsv("data.csv", data)
         }
+         
+       
 
         function fallbackCopyTextToClipboard(text) {
             var textArea = document.createElement("textarea");
